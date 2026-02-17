@@ -8,7 +8,78 @@
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div x-data="{ activeTab: 'materi' }" class="bg-white overflow-hidden shadow-lg sm:rounded-xl ring-1 ring-gray-100">
-                
+                                   <div class="mt-8 bg-white shadow overflow-hidden sm:rounded-lg">
+    <div class="px-4 py-5 sm:px-6 border-b border-gray-200 flex justify-between items-center">
+        <div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900">
+                Daftar Mahasiswa
+            </h3>
+            <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                Mahasiswa yang telah bergabung menggunakan kode kelas.
+            </p>
+        </div>
+        <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">
+            Total: {{ $classroom->students->count() }} Mahasiswa
+        </span>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        No
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Nama Mahasiswa
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        NIM
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Tanggal Bergabung
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                @forelse($classroom->students as $index => $student)
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ $index + 1 }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                {{-- Jika ada foto profil bisa ditambahkan di sini --}}
+                                <div class="ml-0">
+                                    <div class="text-sm font-medium text-gray-900">
+                                        {{ $student->name }}
+                                    </div>
+                                    <div class="text-sm text-gray-500">
+                                        {{ $student->email }}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ $student->nim ?? '-' }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{-- Mengambil data dari kolom joined_at di tabel pivot --}}
+                            {{ \Carbon\Carbon::parse($student->pivot->joined_at)->format('d M Y, H:i') }}
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="4" class="px-6 py-10 text-center text-gray-500">
+                            <p class="mb-2">Belum ada mahasiswa yang bergabung.</p>
+                            <span class="text-xs bg-gray-100 p-1 rounded">Kode Kelas: <b>{{ $classroom->code }}</b></span>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
                 {{-- Tab Navigation --}}
                 <div class="flex border-b border-gray-200 bg-gray-50">
                     <button @click="activeTab = 'materi'" 
@@ -59,7 +130,7 @@
                                 </div>
                                 
                                 <div class="flex justify-end">
-                                    <button type="submit" class="bg-blue-600 text-white px-6 py-2.5 rounded-lg font-bold text-sm hover:bg-blue-700 shadow-md hover:shadow-lg transition duration-150 flex items-center gap-2">
+                                    <button type="submit"onclick="this.innerHTML='Menyimpan...'; this.disabled=true; this.form.submit();" class="bg-blue-600 text-white px-6 py-2.5 rounded-lg font-bold text-sm hover:bg-blue-700 shadow-md hover:shadow-lg transition duration-150 flex items-center gap-2">
                                         <span>Simpan Materi</span>
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
                                     </button>
@@ -88,9 +159,9 @@
                                         <a href="{{ route('dosen.material.edit', $modul->id) }}" class="p-2 text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded-full transition" title="Edit">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                                         </a>
-                                        <form action="{{ route('dosen.material.destroy', $modul->id) }}" method="POST" onsubmit="return confirm('Hapus materi ini?');">
+                                        <form action="{{ route('dosen.material.destroy', $modul->id) }}" method="POST" onsubmit="return confirm('Hapus materi ini?');" >
                                             @csrf @method('DELETE')
-                                            <button type="submit" class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition" title="Hapus">
+                                            <button type="submit" onclick="confirmDelete(event) class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition" title="Hapus" >
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                             </button>
                                         </form>
@@ -118,7 +189,7 @@
                                 <h3 class="font-bold text-yellow-900 text-lg">Buat Ujian Baru (Pre/Post Test)</h3>
                             </div>
 
-                            <form action="{{ route('dosen.material.store', $classroom->id) }}" method="POST">
+                            <form action="{{ route('dosen.material.store', $classroom->id) }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="flex flex-col md:flex-row gap-4 items-end">
                                     <div class="flex-grow w-full">

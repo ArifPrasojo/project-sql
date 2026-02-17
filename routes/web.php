@@ -40,21 +40,13 @@ Route::middleware('auth')->group(function () {
         Route::put('/material/{material}', [LecturerController::class, 'updateMaterial'])->name('material.update');
         Route::delete('/material/{material}', [LecturerController::class, 'destroyMaterial'])->name('material.destroy');
 
-// 1. Halaman List Soal
-    Route::get('/material/{material}/questions', [LecturerController::class, 'manageQuestions'])->name('questions.index');
-    
-    // 2. Simpan Soal (Ini yang menyebabkan error "not defined")
-    Route::post('/material/{material}/questions', [LecturerController::class, 'storeQuestion'])->name('questions.store');
-    
-    // 3. Edit & Update Soal
-    Route::get('/question/{question}/edit', [LecturerController::class, 'editQuestion'])->name('questions.edit');
-    Route::put('/question/{question}', [LecturerController::class, 'updateQuestion'])->name('questions.update');
-    
-    // 4. Hapus Soal
-    Route::delete('/question/{question}', [LecturerController::class, 'destroyQuestion'])->name('questions.destroy');
+        Route::get('/material/{material}/questions', [LecturerController::class, 'manageQuestions'])->name('questions.index');
+        Route::post('/material/{material}/questions', [LecturerController::class, 'storeQuestion'])->name('questions.store');
+        Route::get('/question/{question}/edit', [LecturerController::class, 'editQuestion'])->name('questions.edit');
+        Route::put('/question/{question}', [LecturerController::class, 'updateQuestion'])->name('questions.update');
+        Route::delete('/question/{question}', [LecturerController::class, 'destroyQuestion'])->name('questions.destroy');
     });
 
-    // === ROUTE MAHASISWA ===
     Route::post('/join-class', [StudentController::class, 'joinClass'])->name('student.join');
 
 });

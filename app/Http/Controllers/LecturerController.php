@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class LecturerController extends Controller
 {
@@ -58,13 +59,20 @@ class LecturerController extends Controller
             'title' => 'required|string|max:255',
             'category' => 'required|in:learning,pre_test,post_test', // Sesuai enum migrasi
             'content' => 'nullable|string',
+            'file' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx|max:10240',
         ]);
+
+        $filePath = null;
+        if ($request->hasFile('file')) {
+            $filePath = $request->file('file')->store('materials', 'public');
+        }
 
         Material::create([
             'classroom_id' => $classroom->id,
             'title' => $request->input('title'),
             'category' => $request->input('category'),
             'content' => $request->input('content'),
+            'file_path' => $filePath,
         ]);
 
         return back()->with('success', 'Materi/Ujian berhasil ditambahkan.');
@@ -157,23 +165,32 @@ public function storeQuestion(Request $request, Material $material)
             'type' => 'required|in:essay,fill_in_blank,drag_and_drop',
             'correct_answer_key' => 'required',
             'points' => 'required|integer|min:1',
-            // Validasi options jika tipe drag_and_drop
             'options' => 'nullable|array',
-            'options.*' => 'string',
         ]);
 
+        $options = null;
+        
+        if ($request->type === 'drag_and_drop') {
+            // Hapus input kosong dari array options
+            $options = array_filter($request->options ?? [], function($value) {
+                return !is_null($value) && $value !== '';
+            });
+            // Re-index array supaya rapi (0, 1, 2...)
+            $options = array_values($options);
+        }
+
+        // 4. Simpan ke Database
         Question::create([
             'material_id' => $material->id,
             'question_text' => $request->question_text,
             'type' => $request->type,
             'correct_answer_key' => $request->correct_answer_key,
             'points' => $request->points,
-            // Simpan options (Laravel otomatis convert ke JSON karena cast di Model)
-            'options' => $request->options ?? null, 
-            'cognitive_level' => 'applying', // Default untuk DDL biasanya Applying/Creating
+            'options' => $options, 
+            'cognitive_level' => 'applying', 
         ]);
 
-        return back()->with('success', 'Soal SQL berhasil ditambahkan.');
+        return back()->with('success', 'Soal berhasil disimpan!');
     }
     // Form Edit Soal
     public function editQuestion(Question $question)
@@ -207,6 +224,5 @@ public function storeQuestion(Request $request, Material $material)
         $question->delete();
         return back()->with('success', 'Soal dihapus.');
     }
-
     
 }

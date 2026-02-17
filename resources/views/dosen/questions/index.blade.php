@@ -86,7 +86,7 @@
                                 <div class="flex gap-2">
                                     <form action="{{ route('dosen.questions.destroy', $q->id) }}" method="POST" onsubmit="return confirm('Hapus soal ini?');">
                                         @csrf @method('DELETE')
-                                        <button class="text-red-500 hover:text-red-700 text-sm font-bold">Hapus</button>
+                                        <button class="text-red-500 hover:text-red-700 text-sm font-bold" type="button" onclick="confirmDelete(event)">Hapus</button>
                                     </form>
                                 </div>
                             </div>
