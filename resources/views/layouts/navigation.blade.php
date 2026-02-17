@@ -6,6 +6,12 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
+                        <svg class="block h-9 w-auto fill-current text-gray-800" xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm.93-10.5a.75.75 0 10-1.36-.62l-2.5 5.5a.75.75 0 001.36.62l2.5-5.5zm4.82 5.5a.75.75 0 10-1.36-.62l-2.5 5.5a.75.75 0 001.36.62l2.5-5.5z"
+                                clip-rule="evenodd" />
+                        </svg>
                     </a>
                 </div>
 

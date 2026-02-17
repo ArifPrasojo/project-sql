@@ -16,9 +16,11 @@ class DashboardController extends Controller
             case 'admin':
                 $logs = ActivityLog::with('user')->latest()->take(40)->get();
                 return view('admin.admin', compact('user', 'logs'));
-                
+
             case 'dosen':
-                return view('dosen.dosen', compact('user'));
+                $classrooms = $user->taughtClassrooms ?? [];
+                return view('dosen.dosen', compact('user', 'classrooms'));
+
             case 'mahasiswa':
             default:
                 return view('mahasiswa.mahasiswa', compact('user'));

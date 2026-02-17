@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -43,5 +45,15 @@ class User extends Authenticatable
         return [
             'password' => 'hashed',
         ];
+    }
+
+    public function taughtClassrooms(): HasMany
+    {
+        return $this->hasMany(Classroom::class, 'teacher_id');
+    }
+
+    public function enrolledClassrooms(): BelongsToMany
+    {
+        return $this->belongsToMany(Classroom::class, 'class_enrollments', 'student_id', 'classroom_id');
     }
 }
