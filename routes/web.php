@@ -45,6 +45,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/question/{question}/edit', [LecturerController::class, 'editQuestion'])->name('questions.edit');
         Route::put('/question/{question}', [LecturerController::class, 'updateQuestion'])->name('questions.update');
         Route::delete('/question/{question}', [LecturerController::class, 'destroyQuestion'])->name('questions.destroy');
+
+            // Route Edit Kelas
+        Route::get('/class/{classroom}/edit', [LecturerController::class, 'editClass'])->name('class.edit');
+        // Route Update Kelas (Simpan Perubahan)
+        Route::put('/class/{classroom}', [LecturerController::class, 'updateClass'])->name('class.update');
+
+        // Route untuk melihat hasil pengerjaan siswa pada materi tertentu
+        Route::get('/material/{material}/results', [LecturerController::class, 'showMaterialResults'])->name('materials.results');
     });
 
     Route::post('/join-class', [StudentController::class, 'joinClass'])->name('student.join');

@@ -2,6 +2,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\StudentAnswer;
 
 class Question extends Model
 {
@@ -19,5 +20,10 @@ class Question extends Model
     public function material()
     {
         return $this->belongsTo(Material::class);
+    }
+
+    public function studentAnswers()
+    {
+        return $this->hasMany(StudentAnswer::class);
     }
 }

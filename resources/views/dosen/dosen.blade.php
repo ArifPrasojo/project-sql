@@ -20,7 +20,10 @@
                         <p class="text-gray-600 text-sm">NIK: <span class="font-mono bg-gray-100 px-2 py-0.5 rounded">{{ $user->nik ?? '-' }}</span></p>
                     </div>
                     <div class="text-right">
-                        <p class="text-3xl font-bold text-indigo-600">{{ count($classrooms ?? []) }}</p>
+                        {{-- (PERBAIKAN 1): Filter count hanya yang is_active == 1 --}}
+                        <p class="text-3xl font-bold text-indigo-600">
+                            {{ $classrooms->where('is_active', 1)->count() }}
+                        </p>
                         <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Kelas Aktif</p>
                     </div>
                 </div>
@@ -30,9 +33,25 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @forelse($classrooms as $class)
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200 hover:shadow-lg transition duration-200 flex flex-col h-full">
+                    {{-- (PERBAIKAN 2): Ubah warna background jika Non-Aktif agar terlihat beda --}}
+                    <div class="{{ $class->is_active ? 'bg-white border-gray-200' : 'bg-gray-100 border-gray-300 opacity-90' }} overflow-hidden shadow-sm sm:rounded-lg border hover:shadow-lg transition duration-200 flex flex-col h-full relative">
+                        
+                        {{-- (PERBAIKAN 3): Badge Status di pojok kanan atas --}}
+                        <div class="absolute top-4 right-4">
+                            @if($class->is_active)
+                                <span class="bg-green-100 text-green-800 text-xs font-bold px-2.5 py-0.5 rounded border border-green-200">
+                                    Aktif
+                                </span>
+                            @else
+                                <span class="bg-red-100 text-red-800 text-xs font-bold px-2.5 py-0.5 rounded border border-red-200">
+                                    Non-Aktif
+                                </span>
+                            @endif
+                        </div>
+
                         <div class="p-6 flex-grow">
-                            <h4 class="font-bold text-xl text-gray-800 mb-2 truncate" title="{{ $class->name }}">
+                            {{-- Judul Kelas --}}
+                            <h4 class="font-bold text-xl text-gray-800 mb-2 truncate pr-16" title="{{ $class->name }}">
                                 {{ $class->name }}
                             </h4>
                             
@@ -50,8 +69,20 @@
                             </p>
                         </div>
 
-                        <div class="bg-gray-50 px-6 py-4 border-t border-gray-100 mt-auto">
-                            <a href="{{ route('dosen.class.show', $class->id) }}" class="block w-full text-center bg-indigo-600 text-white py-2 rounded-md font-bold hover:bg-indigo-700 transition">
+                        {{-- Footer Tombol --}}
+                        <div class="bg-gray-50 px-6 py-4 border-t border-gray-100 mt-auto flex gap-2">
+                            {{-- Tombol Edit --}}
+                            <a href="{{ route('dosen.class.edit', $class->id) }}" 
+                               class="px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-600 hover:text-indigo-600 hover:border-indigo-300 transition shadow-sm"
+                               title="Edit Info Kelas">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                            </a>
+
+                            {{-- Tombol Kelola Kelas --}}
+                            <a href="{{ route('dosen.class.show', $class->id) }}" 
+                               class="flex-1 text-center bg-indigo-600 text-white py-2 rounded-md font-bold hover:bg-indigo-700 transition shadow-sm">
                                 Kelola Kelas &rarr;
                             </a>
                         </div>

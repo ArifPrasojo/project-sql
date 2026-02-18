@@ -88,7 +88,12 @@
                                         @csrf @method('DELETE')
                                         <button class="text-red-500 hover:text-red-700 text-sm font-bold" type="button" onclick="confirmDelete(event)">Hapus</button>
                                     </form>
+                                        <form action="{{ route('dosen.questions.edit', $q->id) }}" method="POST">
+                                        @csrf @method('GET')
+                                        <button class="text-blue-500 hover:text-blue-700 text-sm font-bold" type="submit">Edit</button>
+                                    </form>
                                 </div>
+                                
                             </div>
 
                             <p class="text-gray-800 font-medium mb-3">{{ $q->question_text }}</p>
